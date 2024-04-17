@@ -32,7 +32,7 @@ export class f9menu implements ComponentFramework.ReactControl<IInputs, IOutputs
      * @returns ReactElement root react element for the control
      */
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-        const props: If9MenuProps = { buttonLabel: 'Hello, World!', menuItems: [{ label: "Menu 1", name: "Test" }] };
+        const props: If9MenuProps = { buttonLabel: 'Hello, World!', menuItems: context.parameters.menuItems.raw };
         return React.createElement(
             f9Menu, props
         );
