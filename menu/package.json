@@ -1,7 +1,7 @@
 {
-  "name": "pcf-project",
+  "name": "pp-pcf-f9menu",
   "version": "1.0.0",
-  "description": "Project containing your PowerApps Component Framework (PCF) control.",
+  "description": "A PCF menu component from Fluentui v9.",
   "scripts": {
     "build": "pcf-scripts build",
     "clean": "pcf-scripts clean",
