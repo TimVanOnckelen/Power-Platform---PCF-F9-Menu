@@ -15,6 +15,7 @@ interface IMenuItem {
   name: string;
   disabled?: boolean;
   children?: IMenuItem[];
+  secondary?: string;
 }
 export interface If9MenuProps {
   buttonLabel?: string;
@@ -37,11 +38,24 @@ const F9SubMenu = (properties: IF9SubMenuProps) => {
       <MenuPopover>
         <MenuList>
           {properties.children.map((child) => {
-            return (
-              <MenuItem onClick={() => properties.setLastTriggerd(child.name)}>
-                {child.label}
-              </MenuItem>
-            );
+            if (child.children) {
+              return (
+                <F9SubMenu
+                  label={child.name}
+                  children={child.children}
+                  setLastTriggerd={properties.setLastTriggerd}
+                />
+              );
+            } else {
+              return (
+                <MenuItem
+                  onClick={() => properties.setLastTriggerd(child.name)}
+                  secondaryContent={child.secondary!}
+                >
+                  {child.label}
+                </MenuItem>
+              );
+            }
           })}
         </MenuList>
       </MenuPopover>
@@ -61,36 +75,15 @@ export const f9Menu = (props: If9MenuProps) => {
     setItems(parsedItems.items!);
   }, [menuItems]);
 
+  React.useEffect(() => {}, [getLastTriggerd]);
+
   return (
     <FluentProvider theme={webLightTheme}>
-      {getLastTriggerd}
-      <Menu>
-        <MenuTrigger disableButtonEnhancement>
-          <Button>{buttonLabel}</Button>
-        </MenuTrigger>
-
-        <MenuPopover>
-          <MenuList>
-            {getItems.map((cMenuItem) => {
-              if (cMenuItem.children) {
-                return (
-                  <F9SubMenu
-                    label={cMenuItem.name}
-                    children={cMenuItem.children}
-                    setLastTriggerd={setLastTriggerd}
-                  />
-                );
-              } else {
-                return (
-                  <MenuItem onClick={() => setLastTriggerd(cMenuItem.name)}>
-                    {cMenuItem.label}
-                  </MenuItem>
-                );
-              }
-            })}
-          </MenuList>
-        </MenuPopover>
-      </Menu>
+      <F9SubMenu
+        label={buttonLabel}
+        children={getItems}
+        setLastTriggerd={setLastTriggerd}
+      ></F9SubMenu>
     </FluentProvider>
   );
 };
