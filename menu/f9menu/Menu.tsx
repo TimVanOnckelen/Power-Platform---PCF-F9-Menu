@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import * as React from "react";
 import {
   Menu,
@@ -44,6 +45,7 @@ const F9SubMenu = (properties: IF9SubMenuProps) => {
                   label={child.name}
                   children={child.children}
                   setLastTriggerd={properties.setLastTriggerd}
+                  key={child.name}
                 />
               );
             } else {
@@ -51,6 +53,7 @@ const F9SubMenu = (properties: IF9SubMenuProps) => {
                 <MenuItem
                   onClick={() => properties.setLastTriggerd(child.name)}
                   secondaryContent={child.secondary!}
+                  key={child.name}
                 >
                   {child.label}
                 </MenuItem>
