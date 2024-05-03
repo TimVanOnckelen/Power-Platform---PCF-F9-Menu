@@ -21,6 +21,7 @@
     <property name="buttonLabel" display-name-key="Button Label" description-key="Label of the main button" of-type="SingleLine.Text" usage="bound" required="true"/>
     <property name="menuItems" display-name-key="Menu Items" description-key="All items from the menu" of-type="SingleLine.Text" usage="bound" />
     <property name="lastClickedMenuItem" display-name-key="Last clicked menu item" description-key="The name of the last clicked menu item" of-type="SingleLine.Text" usage="output" />
+        <property name="fluentUiTheme" display-name-key="Fluent UI Theme" description-key="Fluent UI Theme" of-type="SingleLine.Text" usage="bound"  />
     <!--
       Property node's of-type attribute can be of-type-group attribute.
       Example:

@@ -1,7 +1,22 @@
 /* eslint-disable react/no-children-prop */
 import * as React from 'react';
-import { Menu, MenuTrigger, Button, MenuPopover, MenuItem, Text, MenuList, FluentProvider, webLightTheme } from '@fluentui/react-components';
-import { type FluentIcon, AccessTime20Filled } from '@fluentui/react-icons';
+import {
+  Menu,
+  MenuTrigger,
+  Button,
+  MenuPopover,
+  MenuItem,
+  Text,
+  MenuList,
+  FluentProvider,
+  webLightTheme,
+  type Theme,
+  teamsDarkTheme,
+  teamsLightTheme,
+  teamsHighContrastTheme,
+  webDarkTheme,
+} from '@fluentui/react-components';
+import { type FluentIcon } from '@fluentui/react-icons';
 
 interface IMenuItem {
   label: string;
@@ -22,6 +37,9 @@ export interface IF9MainMenu {
 export interface If9MenuProps {
   buttonLabel?: string;
   items?: string | null;
+  onMenuChange: () => void;
+  lastClickedMenuItem: (item: string) => void;
+  fluentUiTheme?: string;
 }
 
 export interface IF9SubMenuProps {
@@ -37,6 +55,10 @@ export interface IF9MenuItem {
 
 export interface IF9IconProps {
   iconName: string;
+}
+
+export interface IErrorBoundry {
+  children: React.ReactElement<any, any>;
 }
 
 const F9Menu = (properties: IF9MainMenu) => {
@@ -98,14 +120,13 @@ const RenderIcon = (properties: IF9IconProps) => {
           // @ts-ignore
           default: x[`${iconName}`],
         }))
-        .catch(() => ({
-          default: '',
-        }))
+        .catch(() => {
+          throw new Error('Error rendering menu item');
+        })
     );
     return <Component />;
-  } catch (e) {
-    console.log(e);
-    return <AccessTime20Filled />;
+  } catch {
+    throw new Error('Error rendering menu item');
   }
 };
 
@@ -138,12 +159,43 @@ export const Loading = () => {
   return <Text>Loading...</Text>;
 };
 
+function ErrorBoundary(props: IErrorBoundry) {
+  const [hasError, setHasError] = React.useState(false);
+
+  if (hasError) {
+    return <>Error in menu, please check if your item data is valid.</>;
+  }
+
+  return props.children;
+}
+
 export const f9Menu = (props: If9MenuProps) => {
-  const { buttonLabel = 'Menu', items = '' } = props;
+  const { buttonLabel = 'Menu', items = '', lastClickedMenuItem, onMenuChange, fluentUiTheme = 'webLightTheme' } = props;
 
   const [getItems, setItems] = React.useState<IMenuItem[]>([]);
+  const [currentTheme, setCurrentTheme] = React.useState<Theme | React.LazyExoticComponent<any>>(webLightTheme);
 
   const [getLastTriggerd, setLastTriggerd] = React.useState<string>('');
+
+  React.useEffect(() => {
+    switch (fluentUiTheme) {
+      case 'webLightTheme':
+        setCurrentTheme(webLightTheme);
+        break;
+      case 'webDarkTheme':
+        setCurrentTheme(webDarkTheme);
+        break;
+      case 'teamsDarkTheme':
+        setCurrentTheme(teamsDarkTheme);
+        break;
+      case 'teamsLightTheme':
+        setCurrentTheme(teamsLightTheme);
+        break;
+      case 'teamsHighContrast':
+        setCurrentTheme(teamsHighContrastTheme);
+        break;
+    }
+  }, [fluentUiTheme]);
 
   React.useEffect(() => {
     try {
@@ -154,19 +206,24 @@ export const f9Menu = (props: If9MenuProps) => {
     }
   }, [items]);
 
-  React.useEffect(() => {}, [getLastTriggerd]);
+  React.useEffect(() => {
+    lastClickedMenuItem(getLastTriggerd);
+    onMenuChange();
+  }, [getLastTriggerd]);
 
   return (
-    <React.Suspense fallback={<Loading />}>
-      <FluentProvider theme={webLightTheme}>
-        <F9Menu buttonLabel={buttonLabel}>
-          <F9SubMenu
-            items={getItems}
-            setLastTriggerd={setLastTriggerd}
-            isMain={true}
-          ></F9SubMenu>
-        </F9Menu>
-      </FluentProvider>
-    </React.Suspense>
+    <ErrorBoundary>
+      <React.Suspense fallback={<Loading />}>
+        <FluentProvider theme={currentTheme as Theme}>
+          <F9Menu buttonLabel={buttonLabel}>
+            <F9SubMenu
+              items={getItems}
+              setLastTriggerd={setLastTriggerd}
+              isMain={true}
+            ></F9SubMenu>
+          </F9Menu>
+        </FluentProvider>
+      </React.Suspense>
+    </ErrorBoundary>
   );
 };

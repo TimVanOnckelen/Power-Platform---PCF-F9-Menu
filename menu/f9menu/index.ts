@@ -6,6 +6,8 @@ export class f9menu implements ComponentFramework.ReactControl<IInputs, IOutputs
   private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
   private notifyOutputChanged: () => void;
 
+  private _lastClickedMenuItem = '';
+
   /**
    * Empty constructor.
    */
@@ -28,7 +30,15 @@ export class f9menu implements ComponentFramework.ReactControl<IInputs, IOutputs
    * @returns ReactElement root react element for the control
    */
   public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-    const props: If9MenuProps = { buttonLabel: context.parameters.buttonLabel.raw!, items: context.parameters.menuItems.raw };
+    const props: If9MenuProps = {
+      onMenuChange: this.notifyOutputChanged,
+      buttonLabel: context.parameters.buttonLabel.raw!,
+      items: context.parameters.menuItems.raw,
+      lastClickedMenuItem: (item: string) => {
+        this._lastClickedMenuItem = item;
+      },
+      fluentUiTheme: context.parameters.fluentUiTheme.raw!,
+    };
     return React.createElement(f9Menu, props);
   }
 
@@ -37,7 +47,9 @@ export class f9menu implements ComponentFramework.ReactControl<IInputs, IOutputs
    * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as "bound" or "output"
    */
   public getOutputs(): IOutputs {
-    return {};
+    return {
+      lastClickedMenuItem: this._lastClickedMenuItem,
+    };
   }
 
   /**
