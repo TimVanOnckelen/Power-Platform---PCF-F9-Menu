@@ -18,8 +18,9 @@
       -->
     </external-service-usage>
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
-    <property name="sampleProperty" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
+    <property name="buttonLabel" display-name-key="Button Label" description-key="Label of the main button" of-type="SingleLine.Text" usage="bound" required="true"/>
     <property name="menuItems" display-name-key="Menu Items" description-key="All items from the menu" of-type="SingleLine.Text" usage="bound" />
+    <property name="lastClickedMenuItem" display-name-key="Last clicked menu item" description-key="The name of the last clicked menu item" of-type="SingleLine.Text" usage="output" />
     <!--
       Property node's of-type attribute can be of-type-group attribute.
       Example:

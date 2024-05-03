@@ -15,7 +15,8 @@
   "dependencies": {
     "@fluentui/react-components": "^9.47.5",
     "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "react-dom": "16.14.0",
+    "react-lazily": "^0.9.2"
   },
   "devDependencies": {
     "@microsoft/eslint-plugin-power-apps": "^0.2.6",
